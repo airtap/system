@@ -1,6 +1,6 @@
 {
   "name": "airtap-system",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Browser provider for locally installed browsers",
   "license": "MIT",
   "author": "Vincent Weevers",
