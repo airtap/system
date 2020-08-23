@@ -12,7 +12,5 @@ addons:
 services:
   - xvfb
 
-script: npx airtap -la && npm test
-
 notifications:
   email: false
