@@ -1,0 +1,48 @@
+{
+  "name": "airtap-system",
+  "version": "0.0.0",
+  "description": "Browser provider for locally installed browsers",
+  "license": "MIT",
+  "author": "Vincent Weevers",
+  "scripts": {
+    "test": "standard && hallmark && depcheck && npm run test:unit",
+    "test:unit": "cross-env DEBUG=airtap* nyc node test",
+    "fix:js": "standard --fix",
+    "fix:md": "hallmark --fix"
+  },
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "@httptoolkit/browser-launcher": "^1.7.3",
+    "abstract-browser": "^1.0.0",
+    "browser-names": "^1.1.0",
+    "browser-provider": "^1.1.0",
+    "debug": "^4.1.1",
+    "tasklist": "^4.0.1",
+    "thunky": "^1.1.0",
+    "which": "^2.0.2"
+  },
+  "devDependencies": {
+    "airtap": "github:airtap/airtap#d8da4f6",
+    "cross-env": "^7.0.2",
+    "depcheck": "^1.2.0",
+    "hallmark": "^3.0.0",
+    "nyc": "^15.1.0",
+    "standard": "^14.3.4",
+    "tape": "^5.0.1"
+  },
+  "keywords": [
+    "airtap",
+    "browser",
+    "browser-provider",
+    "system",
+    "test"
+  ],
+  "repository": "airtap/system",
+  "bugs": "https://github.com/airtap/system/issues",
+  "homepage": "https://github.com/airtap/system",
+  "engines": {
+    "node": ">=10.2"
+  }
+}
