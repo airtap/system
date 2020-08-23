@@ -41,6 +41,8 @@ class SystemProvider extends Provider {
 
       // TODO (browser-launcher): expose release channel, arch, etc
       const manifests = launch.browsers.map(function ({ name, version, command }) {
+        if (name === 'phantomjs') return
+
         const title = `System ${names.title(name) || name} ${version}`
         const options = { headless }
         const supports = { headless }
@@ -54,7 +56,7 @@ class SystemProvider extends Provider {
         return { name, version, title, command, options, supports }
       })
 
-      callback(null, manifests)
+      callback(null, manifests.filter(Boolean))
     })
   }
 
