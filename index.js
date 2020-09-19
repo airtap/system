@@ -84,11 +84,17 @@ class SystemBrowser extends Browser {
       this[kProvider][kLauncher]((err, launch) => {
         if (err) return callback(err)
 
+        // If xvfb is already running (detected by presence of DISPLAY) then use
+        // that, instead of having browser-launcher start it (which has an issue
+        // atm: it doesn't stop xvfb afterwards and keeps the event loop open).
+        const headless = this.manifest.options.headless && !process.env.DISPLAY
+
         launch(this.target.url, {
           // TODO (browser-launcher): allow passing in exact browser
           browser: this.manifest.name,
           version: this.manifest.version,
-          ...this.manifest.options
+          ...this.manifest.options,
+          headless
         }, (err, instance) => {
           if (err) return callback(err)
 
