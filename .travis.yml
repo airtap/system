@@ -1,5 +1,12 @@
 language: node_js
 
+os:
+  - linux
+  # TODO: firefox doesn't close
+  # - osx
+  # TODO: where does travis install chrome and ff? they can't be found
+  # - windows
+
 node_js:
   - 10
   - 12

@@ -3,46 +3,32 @@
 const Provider = require('browser-provider')
 const Browser = require('abstract-browser')
 const names = require('browser-names')
-const thunky = require('thunky')
 const which = require('which')
 const debug = require('debug')('airtap-system')
-const launcher = require('@httptoolkit/browser-launcher')
+const launcher = require('the-last-browser-launcher')
 const tasklist = require('tasklist')
 const exec = require('child_process').exec
 
-const kLauncher = Symbol('kLauncher')
+const kLaunch = Symbol('kLaunch')
 const kProvider = Symbol('kProvider')
 const kOnExit = Symbol('kOnExit')
 const kInstance = Symbol('kInstance')
 const kImage = Symbol('kImage')
 const kPriorPids = Symbol('kPriorPids')
 
-// TODO (browser-launcher): use unique profile dirs
 // TODO (browser-launcher): disable update check on FF
 class SystemProvider extends Provider {
-  constructor (options) {
-    super(options)
-
-    this[kLauncher] = thunky(function (callback) {
-      // TODO (browser-launcher): opt-out of cache
-      launcher.update(function (err) {
-        if (err) return callback(err)
-        launcher(callback)
-      })
-    })
-  }
-
   _manifests (callback) {
-    this[kLauncher]((err, launch) => {
+    launcher((err, browsers, launch) => {
       if (err) return callback(err)
+
+      this[kLaunch] = launch
 
       // Headless support depends on xvfb
       const headless = hasXvfb()
 
       // TODO (browser-launcher): expose release channel, arch, etc
-      const manifests = launch.browsers.map(function ({ name, version, command }) {
-        if (name === 'phantomjs') return
-
+      const manifests = browsers.map(function ({ name, version, command }) {
         const title = `System ${names.title(name) || name} ${version}`
         const options = { headless }
         const supports = { headless }
@@ -81,28 +67,19 @@ class SystemBrowser extends Browser {
       if (err) return callback(err)
 
       this[kPriorPids] = pids
-      this[kProvider][kLauncher]((err, launch) => {
+
+      this[kProvider][kLaunch](this.target.url, {
+        // TODO (browser-launcher): allow passing in exact browser
+        browser: this.manifest.name,
+        version: this.manifest.version,
+        ...this.manifest.options
+      }, (err, instance) => {
         if (err) return callback(err)
 
-        // If xvfb is already running (detected by presence of DISPLAY) then use
-        // that, instead of having browser-launcher start it (which has an issue
-        // atm: it doesn't stop xvfb afterwards and keeps the event loop open).
-        const headless = this.manifest.options.headless && !process.env.DISPLAY
+        this[kInstance] = instance
+        this[kInstance].process.once('exit', this[kOnExit])
 
-        launch(this.target.url, {
-          // TODO (browser-launcher): allow passing in exact browser
-          browser: this.manifest.name,
-          version: this.manifest.version,
-          ...this.manifest.options,
-          headless
-        }, (err, instance) => {
-          if (err) return callback(err)
-
-          this[kInstance] = instance
-          this[kInstance].process.once('exit', this[kOnExit])
-
-          callback()
-        })
+        callback()
       })
     })
   }

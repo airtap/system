@@ -14,17 +14,16 @@
     "index.js"
   ],
   "dependencies": {
-    "@httptoolkit/browser-launcher": "^1.7.3",
     "abstract-browser": "^1.0.0",
     "browser-names": "^1.1.0",
     "browser-provider": "^1.1.0",
     "debug": "^4.1.1",
     "tasklist": "^4.0.1",
-    "thunky": "^1.1.0",
+    "the-last-browser-launcher": "0.0.1",
     "which": "^2.0.2"
   },
   "devDependencies": {
-    "airtap": "^4.0.0",
+    "airtap": "^4.0.1",
     "cross-env": "^7.0.2",
     "depcheck": "^1.2.0",
     "hallmark": "^3.0.0",
