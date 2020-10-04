@@ -3,13 +3,11 @@
 const Provider = require('browser-provider')
 const Browser = require('abstract-browser')
 const names = require('browser-names')
-const which = require('which')
 const debug = require('debug')('airtap-system')
 const launcher = require('the-last-browser-launcher')
 const tasklist = require('tasklist')
 const exec = require('child_process').exec
 
-const kLaunch = Symbol('kLaunch')
 const kProvider = Symbol('kProvider')
 const kOnExit = Symbol('kOnExit')
 const kInstance = Symbol('kInstance')
@@ -19,30 +17,25 @@ const kPriorPids = Symbol('kPriorPids')
 // TODO (browser-launcher): disable update check on FF
 class SystemProvider extends Provider {
   _manifests (callback) {
-    launcher((err, browsers, launch) => {
+    launcher.detect((err, manifests) => {
       if (err) return callback(err)
 
-      this[kLaunch] = launch
+      manifests = manifests.map(function (manifest) {
+        const title = names.title(manifest.name) || manifest.name
+        const suffix = manifest.version ? ` ${manifest.version}` : ''
 
-      // Headless support depends on xvfb
-      const headless = hasXvfb()
+        manifest.title = `System ${title}${suffix}`
 
-      // TODO (browser-launcher): expose release channel, arch, etc
-      const manifests = browsers.map(function ({ name, version, command }) {
-        const title = `System ${names.title(name) || name} ${version}`
-        const options = { headless }
-        const supports = { headless }
-
-        if (getImage(name)) {
+        if (getImage(manifest.name)) {
           // Can't run multiple processes if they're killed by image name
           // (and IE doesn't support it for additional, unknown reasons).
-          supports.concurrency = false
+          manifest.supports.concurrency = false
         }
 
-        return { name, version, title, command, options, supports }
+        return manifest
       })
 
-      callback(null, manifests.filter(Boolean))
+      callback(null, manifests)
     })
   }
 
@@ -68,12 +61,7 @@ class SystemBrowser extends Browser {
 
       this[kPriorPids] = pids
 
-      this[kProvider][kLaunch](this.target.url, {
-        // TODO (browser-launcher): allow passing in exact browser
-        browser: this.manifest.name,
-        version: this.manifest.version,
-        ...this.manifest.options
-      }, (err, instance) => {
+      launcher.launch(this.manifest, this.target.url, (err, instance) => {
         if (err) return callback(err)
 
         this[kInstance] = instance
@@ -130,13 +118,10 @@ class SystemBrowser extends Browser {
       instance.stop(callback)
     }
   }
-}
 
-function hasXvfb () {
-  if (process.platform === 'win32') return false
-  if (!which.sync('Xvfb', { nothrow: true })) return false
-
-  return true
+  unref () {
+    if (this[kInstance]) this[kInstance].unref()
+  }
 }
 
 function imagePids (image, callback) {
