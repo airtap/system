@@ -2,22 +2,23 @@ language: node_js
 
 os:
   - linux
-  # TODO: firefox doesn't close
-  # - osx
-  # TODO: where does travis install chrome and ff? they can't be found
-  # - windows
+  - osx
+  - windows
+
+cache:
+  npm: false
 
 node_js:
   - 10
   - 12
   - 14
 
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install googlechrome -y --ignore-checksums; fi
+
 addons:
   chrome: stable
   firefox: latest
-
-services:
-  - xvfb
 
 notifications:
   email: false

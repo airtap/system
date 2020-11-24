@@ -1,6 +1,6 @@
 # airtap-system
 
-**[Browser provider](https://github.com/airtap/browser-provider) for locally installed browsers. List and run browsers on your machine. Supports Chrome, Chromium, Firefox, IE, Edge, Brave, Opera and Safari.**
+**[Browser provider](https://github.com/airtap/browser-provider) for locally installed browsers. List and run browsers on your machine. Supports Chrome, Chromium, Firefox, IE, Edge, Brave, Opera and Safari, on Linux, Mac & Windows, with cross-platform headless mode on Chromium, Chrome, Edge, Brave and Firefox.**
 
 [![npm status](http://img.shields.io/npm/v/airtap-system.svg)](https://www.npmjs.org/package/airtap-system)
 [![node](https://img.shields.io/node/v/airtap-system.svg)](https://www.npmjs.org/package/airtap-system)
@@ -50,8 +50,7 @@ providers:
 browsers:
   - name: firefox
     version: 79
-  - name: firefox
-    version: dev
+  - name: chrome
 ```
 
 This provider also exposes a [`supports`](https://github.com/airtap/browser-manifest#supports) property to match on:
@@ -63,6 +62,18 @@ browsers:
       headless: true
 ```
 
+As well as a release `channel` and (Windows-only) `arch`:
+
+```yaml
+browsers:
+  - name: chrome
+    channel: beta
+  - name: firefox
+    channel: nightly
+  - name: ie
+    arch: i386
+```
+
 ## API
 
 ### `System()`
@@ -71,7 +82,7 @@ Constructor. Returns an instance of [`browser-provider`](https://github.com/airt
 
 ### Browser options
 
-- `headless` (boolean, default true): run in headless mode (Linux and Mac only, requires `xvfb` to be preinstalled).
+- `headless` (boolean, default true if supported): run in headless mode.
 
 In Airtap these can be set like so:
 

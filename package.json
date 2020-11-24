@@ -19,8 +19,7 @@
     "browser-provider": "^1.1.0",
     "debug": "^4.1.1",
     "tasklist": "^4.0.1",
-    "the-last-browser-launcher": "0.0.1",
-    "which": "^2.0.2"
+    "the-last-browser-launcher": "^0.1.0"
   },
   "devDependencies": {
     "airtap": "^4.0.1",
