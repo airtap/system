@@ -16,19 +16,19 @@
   "dependencies": {
     "abstract-browser": "^1.0.0",
     "browser-names": "^1.1.0",
-    "browser-provider": "^1.1.0",
-    "debug": "^4.1.1",
+    "browser-provider": "^1.2.0",
+    "debug": "^4.3.1",
     "tasklist": "^4.0.1",
     "the-last-browser-launcher": "^0.1.0"
   },
   "devDependencies": {
-    "airtap": "^4.0.1",
-    "cross-env": "^7.0.2",
-    "depcheck": "^1.2.0",
-    "hallmark": "^3.0.0",
+    "airtap": "^4.0.2",
+    "cross-env": "^7.0.3",
+    "depcheck": "^1.4.0",
+    "hallmark": "^3.1.0",
     "nyc": "^15.1.0",
     "standard": "^14.3.4",
-    "tape": "^5.0.1"
+    "tape": "^5.2.2"
   },
   "keywords": [
     "airtap",
