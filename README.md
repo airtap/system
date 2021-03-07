@@ -28,17 +28,35 @@
 
 ```js
 const System = require('airtap-system')
-const provider = new System()
+const system = new System()
 
 // Get a list of desired browsers
 const wanted = [{ name: 'firefox', version: 79 }]
-const manifests = await provider.manifests(wanted)
+const manifests = await system.manifests(wanted)
 
 // Instantiate a browser
 const target = { url: 'http://localhost:3000' }
-const browser = provider.browser(manifests[0], target)
+const browser = system.browser(manifests[0], target)
 
 await browser.open()
+```
+
+If you just want to open a single browser:
+
+```js
+const browser = await system.open('chrome', 'https://example.com', {
+  headless: false
+})
+```
+
+Or find a single browser:
+
+```js
+const manifest = await system.find({
+  name: 'chrome',
+  channel: 'canary',
+  supports: { headless: true }
+})
 ```
 
 ### With [Airtap](https://github.com/airtap/airtap)
